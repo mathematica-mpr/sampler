@@ -51,9 +51,9 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	}
 
 	// Check that prevalence is between 0 and 1
-	//if prevalence > float64(0) && prevalence < float64(1) {
-	//	return serverError(errors.New("Prevalence is not between 0 and 1"))
-	//}
+	if prevalence <= float64(0) || prevalence >= float64(1) {
+		return serverError(errors.New("Prevalence is not between 0 and 1"))
+	}
 
 	//Check that all other input numbers are positive or 0
 	if truepositives_int <= 0 {
