@@ -1,0 +1,39 @@
+version: 0.2
+
+phases:
+
+  install:
+    commands:
+      # AWS Codebuild Go images use /go for the $GOPATH so let's copy our 
+      # application source code into that directory structure.
+      - mkdir -p "/go/src/$(dirname ${PACKAGE})"
+      - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
+      
+      # Print all environment variables (handy for AWS CodeBuild logs)
+      - env
+
+      # Install golint
+      - go get -u github.com/golang/lint/golint
+
+ pre_build: 
+    commands:
+
+      # Make sure we're in the project directory within our GOPATH
+      - cd "/go/src/sampler"
+
+      # Fetch all dependencies
+      - go get -t ./...
+
+  build:
+    commands:
+
+      # Build our go application
+      - go build -o main
+
+      # Package our application with AWS SAM
+      - aws cloudformation package --template-file template.yml --s3-bucket sampler-deployment-package --output-template-file packaged.yml
+
+artifacts:
+  type: zip
+  files:
+    - packaged.yml
