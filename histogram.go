@@ -39,8 +39,8 @@ func makebins(binWidth float64, arr []float64) []float64 {
 		max = math.Max(max, n)
 	}
 
-	// finding number of bins (better overshoot it to not come short in case of rounding)
-	numBins := int(max/binWidth) + 1
+	// finding number of bins
+	numBins := findNumBins(sample, max, binWidth)
 
 	bins := make([]float64, numBins)
 	for i := 0; i <= numBins-1; i += 1 {
@@ -48,6 +48,19 @@ func makebins(binWidth float64, arr []float64) []float64 {
 	}
 
 	return bins
+}
+
+func findNumBins(samp int, max float64, w float64) int {
+	// if we are taking less than 100 samples, we use D-F rule.
+	// if we are taking more than 100 samples, we are only selecting 100 bins
+
+	if samp < 100 {
+		numBins := int(max/w) + 1 //better overshoot it to not come short in case of rounding
+		return numBins
+	} else {
+		numBins := 100
+		return numBins
+	}
 }
 
 func counts(arr []float64) []coord {
