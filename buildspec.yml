@@ -6,7 +6,7 @@ phases:
             golang: 1.12
         commands:
             - echo Installation Started
-            - go -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
+            - go get -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
 
     build:
         commands:
