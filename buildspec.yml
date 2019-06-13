@@ -20,7 +20,15 @@ phases:
             - echo zip go project
             - zip main.zip main
             - ls
-            - ~\Go\Bin\build-lambda-zip.exe -o main.zip main
+
+    post_build:
+        commands:
+            # update function
+            - echo updating lambda function
+            - aws lambda update-function-code \
+              --region us-east-2\
+              --function-name simulate \
+              --zip-file fileb://main.zip
 
 artifacts:
     type: zip
