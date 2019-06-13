@@ -6,6 +6,8 @@ phases:
             golang: 1.12
         commands:
             - echo Installation Started
+            - go get github.com/montanaflynn/stats
+            - go get -u gonum.org/v1/gonum/...
             - go get -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
 
     build:
