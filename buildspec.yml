@@ -6,6 +6,7 @@ phases:
     runtime-versions:
       golang: 1.12
     commands:
+      - echo Installation Started
       # AWS Codebuild Go images use /go for the $GOPATH so let's copy our 
       # application source code into that directory structure.
       - mkdir -p "/go/src/$(dirname ${PACKAGE})"
