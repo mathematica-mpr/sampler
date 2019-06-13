@@ -25,10 +25,8 @@ phases:
         commands:
             # update function
             - echo updating lambda function
-            - aws lambda update-function-code \
-              --region us-east-2\
-              --function-name simulate \
-              --zip-file fileb://main.zip
+            - aws s3 cp dist.zip s3://simulate/main.zip
+            - aws lambda update-function-code --function-name simulate --s3-bucket simulate --s3-key main.zip --publish
 
 artifacts:
     type: zip
