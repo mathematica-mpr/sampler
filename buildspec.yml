@@ -23,6 +23,7 @@ phases:
             - echo updating lambda function
             - aws s3 cp main.zip s3://simulate/main.zip
             - aws lambda update-function-code --function-name simulate --s3-bucket simulate --s3-key main.zip --publish
+            - aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
 
 artifacts:
     type: zip
