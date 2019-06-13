@@ -1,42 +1,26 @@
 version: 0.2
 
 phases:
+    install:
+        runtime-versions:
+            golang: 1.12
+        commands:
+            - echo Installation Started
+            - go -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
 
-  install:
-    runtime-versions:
-      golang: 1.12
-    commands:
-      - echo Installation Started
-      # AWS Codebuild Go images use /go for the $GOPATH so let's copy our 
-      # application source code into that directory structure.
-      - mkdir -p "/go/src/$(dirname ${PACKAGE})"
-      - ln -s "${CODEBUILD_SRC_DIR}" "/go/src/${PACKAGE}" 
-      
-      # Print all environment variables (handy for AWS CodeBuild logs)
-      - env
+    build:
+        commands:
+            # Build our go application
+            - echo build go project
+            - go build -o main
 
-      # Install golint
-      - go get -u github.com/golang/lint/golint
-
- pre_build: 
-    commands:
-
-      # Make sure we're in the project directory within our GOPATH
-      - cd "/go/src/sampler"
-
-      # Fetch all dependencies
-      - go get -t ./...
-
-  build:
-    commands:
-
-      # Build our go application
-      - go build -o main
-
-      # Package our application with AWS SAM
-      - aws cloudformation package --template-file template.yml --s3-bucket sampler-deployment-package --output-template-file packaged.yml
+            # zip go app
+            - echo zip go project
+            - zip main.zip main
+            - ls
+            - ~\Go\Bin\build-lambda-zip.exe -o main.zip main
 
 artifacts:
-  type: zip
-  files:
-    - packaged.yml
+    type: zip
+    files:
+        - packaged.yml
