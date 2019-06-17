@@ -1,3 +1,3 @@
 # sampler
 
-Go code for a sampler app.
+Go simulation code for a sampler app.
