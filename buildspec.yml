@@ -21,7 +21,7 @@ phases:
 
             # zip go app
             - echo zip go project
-            - zip main.zip ./main/main
+            - zip -j main.zip ./main/main
             - ls
             - echo updating lambda function
             - aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
