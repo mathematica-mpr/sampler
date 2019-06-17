@@ -1,2 +1,3 @@
 # sampler
-Go code for a sampling app.
+
+Go code for a sampling app in ./main/
