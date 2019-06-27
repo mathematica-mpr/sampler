@@ -13,15 +13,15 @@ import (
 // TODO: Pass in rand.Source for randomnesss generator?? Or eliminate it
 // keep watch for math/rand vs gonum number generator
 
-type Simul struct {
-	// put hyperprior means here
+type simul struct {
+	// Put hyperprior means here
 
 	hyper1 float64
 	hyper2 float64
 	Src    rand.Source
 }
 
-func (s Simul) run() (float64, float64, float64) {
+func (s simul) run() (float64, float64, float64) {
 
 	// Hyperpriors (Poisson)
 	hp1 := distuv.Poisson{

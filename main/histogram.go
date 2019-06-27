@@ -17,93 +17,94 @@ type coord struct {
 	C int     //Cumulative Count
 }
 
-func computeBinWidth(arr []float64) float64 {
+func makebins(arr []float64, samp int) []float64 {
+	// this function returns a slice of bins for a histogram
+
 	// if sample < 100, this function uses the Freedman-Diaconis rule to determine the width of bins for a histogram
 	// if sample > 100, this function determines the width of bins assuming 100 bins
 
-	if sample < 100 {
+	var bw float64
+	var max float64
+	if samp < 100 {
 		// first, compute IQR
 		iqr, _ := stats.InterQuartileRange(arr)
 		// fmt.Println("IQR:", iqr)
 
 		// compute bin width using F-D rule
 		n := float64(len(arr))
-		bw := 2 * iqr / math.Pow(n, 1.0/3.0)
-
-		return bw
+		bw = 2 * iqr / math.Pow(n, 1.0/3.0)
 	} else {
 		// finding maximum of array
+		min := math.Inf(1)
 		max := 0.00
 		for _, n := range arr {
 			max = math.Max(max, n)
-		}
-
-		// finding minimum of array
-		min := 0.00
-		for _, n := range arr {
-			min = math.Min(max, n)
+			min = math.Min(min, n)
 		}
 		rg := max - min
-		bw := rg / 100
-		return bw
-	}
-}
-
-func makebins(binWidth float64, arr []float64) []float64 {
-	// this function returns the bins for a histogram using the binWidth function
-
-	max := 0.00
-	// finding maximum of array
-	for _, n := range arr {
-		max = math.Max(max, n)
+		bw = rg / 100
 	}
 
 	// finding number of bins
-	numBins := findNumBins(sample, max, binWidth)
+	// if we are taking less than 100 samples, we use D-F rule.
+	// if we are taking more than 100 samples, we are only selecting 100 bins
+
+	var numBins int
+	if samp < 100 {
+		numBins = int(max/bw) + 1 //better overshoot it to not come short in case of rounding
+	} else {
+		numBins = 100
+	}
 
 	bins := make([]float64, numBins)
-	for i := 0; i <= numBins-1; i += 1 {
-		bins[i] = binWidth * float64(i)
+	for i := 1; i <= numBins; i++ { //we don't want to start at 0 by default
+		bins[i-1] = bw * float64(i)
 	}
 
 	return bins
 }
 
-func findNumBins(samp int, max float64, w float64) int {
-	// if we are taking less than 100 samples, we use D-F rule.
-	// if we are taking more than 100 samples, we are only selecting 100 bins
+func counts(arr []float64, samp int) []coord {
 
-	if samp < 100 {
-		numBins := int(max/w) + 1 //better overshoot it to not come short in case of rounding
-		return numBins
-	} else {
-		numBins := 100
-		return numBins
-	}
-}
-
-func counts(arr []float64) []coord {
-
-	width := computeBinWidth(arr)
-	distbins := makebins(width, arr)
+	distbins := makebins(arr, samp)
 
 	hist := make([]coord, len(distbins)-1)
 
-	for j := 0; j <= len(distbins)-2; j += 1 {
+	xs := make([]float64, len(distbins)-1)
+	ys := make([]int, len(distbins)-1)
+	cs := make([]int, len(distbins)-1)
+
+	for j := 0; j <= len(distbins)-2; j++ {
 		y := 0
-		c := 0
 		for _, a := range arr {
 
 			if a >= distbins[j] && a < distbins[j+1] {
-				y += 1
+				y++
 			}
-			c += y
+		}
+		xs[j] = (distbins[j] + distbins[j+1]) / 2 // mean of lower and upper bounds of bins for plotting
+		ys[j] = y
+
+		if j == 0 {
+			cs[j] = y
+		} else {
+			cs[j] = cs[j-1] + ys[j]
 		}
 
-		meanbin := (distbins[j] + distbins[j+1]) / 2 // mean of lower and upper bounds of bins for plotting
-		coordinates := coord{X: meanbin, Y: y, C: c}
+		coordinates := coord{X: xs[j], Y: ys[j], C: cs[j]}
 		hist[j] = coordinates
 	}
+
+	//TO DO: divide each cs[j] by sum of cs[js]
+	// computing total sum of observations so we can get proportion for cumulative distribution
+	// var totalc int
+	// for _, c := range cs {
+	// 	totalc += c
+	// }
+
+	// for j := 0; j <= len(distbins)-2; j++ {
+	// 	hist[3] = hist[3] / totalc
+	// }
 
 	return hist
 }

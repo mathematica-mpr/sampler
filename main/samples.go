@@ -6,21 +6,21 @@ package main
 
 func samples(cases float64, noncases float64, tp float64, fn float64, tn float64, fp float64) (float64, float64, float64, float64, float64, float64, float64, float64, float64) {
 	// Prevalence
-	prev := Simul{
+	prev := simul{
 		hyper1: cases,
 		hyper2: noncases}
 
 	prevalpha, prevbeta, prevtheta := prev.run()
 
 	// Positive row of confusion matrix
-	pos := Simul{
+	pos := simul{
 		hyper1: tp,
 		hyper2: fn}
 
 	posalpha, posbeta, postheta := pos.run()
 
 	// Negative row of confusion matrix
-	neg := Simul{
+	neg := simul{
 		hyper1: tn,
 		hyper2: fp}
 
