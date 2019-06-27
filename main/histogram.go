@@ -14,6 +14,7 @@ type coord struct {
 	// need to be uppercase for json export
 	X float64 //Value
 	Y int     //Count
+	C int     //Cumulative Count
 }
 
 func computeBinWidth(arr []float64) float64 {
@@ -90,15 +91,17 @@ func counts(arr []float64) []coord {
 
 	for j := 0; j <= len(distbins)-2; j += 1 {
 		y := 0
+		c := 0
 		for _, a := range arr {
 
 			if a >= distbins[j] && a < distbins[j+1] {
 				y += 1
 			}
+			c += y
 		}
 
 		meanbin := (distbins[j] + distbins[j+1]) / 2 // mean of lower and upper bounds of bins for plotting
-		coordinates := coord{X: meanbin, Y: y}
+		coordinates := coord{X: meanbin, Y: y, C: c}
 		hist[j] = coordinates
 	}
 
