@@ -1,4 +1,4 @@
-package main
+package sampler
 
 // This script defines the base structure of the simulation
 // It defines the hyperprior, prior and likelihood distributions

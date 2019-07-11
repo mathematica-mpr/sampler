@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sampler"
 	"strconv"
 	"time"
 
@@ -82,7 +83,7 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	positivecases := prevalence * population
 	negativescases := (1 - prevalence) * population
 
-	Jdata, err := simulate(positivecases, negativescases, truepositives, falsenegatives, truenegatives, falsepositives, sample)
+	Jdata, err := sampler.Simulate(positivecases, negativescases, truepositives, falsenegatives, truenegatives, falsepositives, sample)
 	if err != nil {
 		return serverError(err)
 	}

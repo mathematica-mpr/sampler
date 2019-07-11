@@ -1,8 +1,7 @@
-package main
+package sampler
 
 // this script produces distributions for various
 // model fit metrics, and outputs a json file with data to plot histograms
-
 import (
 	"encoding/json"
 	"errors"
@@ -27,7 +26,10 @@ type dict struct {
 	Spec       []coord
 }
 
-func simulate(cases float64, noncases float64, tp float64, fn float64, tn float64, fp float64, sample int) ([]byte, error) {
+var sample int
+
+// Simulate runs sampler
+func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float64, fp float64, sample int) ([]byte, error) {
 
 	// Producing the distributions
 	fmt.Printf("Initializing sampler\n")

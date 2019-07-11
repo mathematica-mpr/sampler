@@ -1,2 +1,5 @@
 *.exe
 *.zip
+*_debug_bin
+testing/
+*.vscode/

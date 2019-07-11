@@ -1,9 +1,10 @@
-package main
+package sampler
 
 // This script produces histogram data in a way that
 // will be easy for the front-end to handle
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/montanaflynn/stats"
@@ -74,6 +75,8 @@ func counts(arr []float64, samp int) []coord {
 	ys := make([]int, len(distbins)-1)
 	cs := make([]int, len(distbins)-1)
 
+	fmt.Print(distbins)
+
 	for j := 0; j <= len(distbins)-2; j++ {
 		y := 0
 		for _, a := range arr {
@@ -88,23 +91,11 @@ func counts(arr []float64, samp int) []coord {
 		if j == 0 {
 			cs[j] = y
 		} else {
-			cs[j] = cs[j-1] + ys[j]
+			cs[j] = cs[j-1] + ys[j] // dividing by samp gets proportion of values below and including bin
 		}
 
-		coordinates := coord{X: xs[j], Y: ys[j], C: cs[j]}
+		coordinates := coord{X: xs[j], Y: ys[j], C: cs[j] / samp}
 		hist[j] = coordinates
 	}
-
-	//TO DO: divide each cs[j] by sum of cs[js]
-	// computing total sum of observations so we can get proportion for cumulative distribution
-	// var totalc int
-	// for _, c := range cs {
-	// 	totalc += c
-	// }
-
-	// for j := 0; j <= len(distbins)-2; j++ {
-	// 	hist[3] = hist[3] / totalc
-	// }
-
 	return hist
 }

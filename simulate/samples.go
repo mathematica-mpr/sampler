@@ -1,4 +1,4 @@
-package main
+package sampler
 
 // This script samples one number from each distribution
 // to construct the prevalence, positive row of the confusion matrix
