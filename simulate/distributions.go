@@ -1,4 +1,4 @@
-package sampler
+package simulate
 
 // This script defines the base structure of the simulation
 // It defines the hyperprior, prior and likelihood distributions
@@ -34,9 +34,11 @@ func (s simul) run() (float64, float64, float64) {
 	beta := hp2.Rand()
 
 	// Prior (Beta)
+	// We are assuming that initially, half of the population has the disease (ie, add 1 to both sides)
+	// Also prevents us from dealing with the case where alpha or beta is 0
 	prior := distuv.Beta{
-		Alpha: alpha,
-		Beta:  beta}
+		Alpha: alpha + 1,
+		Beta:  beta + 1}
 
 	theta := prior.Rand()
 

@@ -1,4 +1,4 @@
-package sampler
+package simulate
 
 // This script produces histogram data in a way that
 // will be easy for the front-end to handle

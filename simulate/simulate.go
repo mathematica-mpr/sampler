@@ -1,4 +1,4 @@
-package sampler
+package simulate
 
 // this script produces distributions for various
 // model fit metrics, and outputs a json file with data to plot histograms
