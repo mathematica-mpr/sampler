@@ -11,16 +11,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sampler"
+	"sampler/simulate"
 	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
-
-// static variable
-var sample = 10000
 
 // Log
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
@@ -83,7 +80,7 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	positivecases := prevalence * population
 	negativescases := (1 - prevalence) * population
 
-	Jdata, err := sampler.Simulate(positivecases, negativescases, truepositives, falsenegatives, truenegatives, falsepositives, sample)
+	Jdata, err := simulate.Simulate(positivecases, negativescases, truepositives, falsenegatives, truenegatives, falsepositives, sample)
 	if err != nil {
 		return serverError(err)
 	}

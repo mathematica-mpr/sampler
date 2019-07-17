@@ -4,7 +4,6 @@ package simulate
 // will be easy for the front-end to handle
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/montanaflynn/stats"
@@ -15,7 +14,7 @@ type coord struct {
 	// need to be uppercase for json export
 	X float64 //Value
 	Y int     //Count
-	C int     //Cumulative Count
+	C float64 //Cumulative Count
 }
 
 func makebins(arr []float64, samp int) []float64 {
@@ -25,7 +24,15 @@ func makebins(arr []float64, samp int) []float64 {
 	// if sample > 100, this function determines the width of bins assuming 100 bins
 
 	var bw float64
-	var max float64
+
+	// finding maximum of array
+	min := math.Inf(1)
+	max := 0.00
+	for _, n := range arr {
+		max = math.Max(max, n)
+		min = math.Min(min, n)
+	}
+
 	if samp < 100 {
 		// first, compute IQR
 		iqr, _ := stats.InterQuartileRange(arr)
@@ -35,15 +42,8 @@ func makebins(arr []float64, samp int) []float64 {
 		n := float64(len(arr))
 		bw = 2 * iqr / math.Pow(n, 1.0/3.0)
 	} else {
-		// finding maximum of array
-		min := math.Inf(1)
-		max := 0.00
-		for _, n := range arr {
-			max = math.Max(max, n)
-			min = math.Min(min, n)
-		}
 		rg := max - min
-		bw = rg / 100
+		bw = rg / 98
 	}
 
 	// finding number of bins
@@ -58,8 +58,8 @@ func makebins(arr []float64, samp int) []float64 {
 	}
 
 	bins := make([]float64, numBins)
-	for i := 1; i <= numBins; i++ { //we don't want to start at 0 by default
-		bins[i-1] = bw * float64(i)
+	for i := 0; i <= numBins-1; i++ {
+		bins[i] = min + bw*float64(i)
 	}
 
 	return bins
@@ -73,9 +73,7 @@ func counts(arr []float64, samp int) []coord {
 
 	xs := make([]float64, len(distbins)-1)
 	ys := make([]int, len(distbins)-1)
-	cs := make([]int, len(distbins)-1)
-
-	fmt.Print(distbins)
+	cs := make([]float64, len(distbins)-1)
 
 	for j := 0; j <= len(distbins)-2; j++ {
 		y := 0
@@ -89,12 +87,12 @@ func counts(arr []float64, samp int) []coord {
 		ys[j] = y
 
 		if j == 0 {
-			cs[j] = y
+			cs[j] = float64(y)
 		} else {
-			cs[j] = cs[j-1] + ys[j] // dividing by samp gets proportion of values below and including bin
+			cs[j] = cs[j-1] + float64(ys[j]) // getting cumulative count of y - dividing by samp gets proportion of values below and including bin
 		}
 
-		coordinates := coord{X: xs[j], Y: ys[j], C: cs[j] / samp}
+		coordinates := coord{X: xs[j], Y: ys[j], C: cs[j] / float64(samp)}
 		hist[j] = coordinates
 	}
 	return hist
