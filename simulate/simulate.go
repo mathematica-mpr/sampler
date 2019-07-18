@@ -26,9 +26,6 @@ type dict struct {
 	Spec       []coord
 }
 
-// static variable
-var sample = 10000
-
 // Simulate runs sampler
 func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float64, fp float64, sample int) ([]byte, error) {
 
@@ -40,7 +37,7 @@ func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float6
 	fmt.Printf("\nSimulation took %s ", elapsed)
 
 	fmt.Printf("\nComputing metrics")
-	ppv, npv, sens, spec := computeMetrics(prev, trp, trn, flp, fln)
+	ppv, npv, sens, spec := computeMetrics(prev, trp, trn, flp, fln, sample)
 
 	// Getting the counts for histogram display
 	fmt.Printf("\nGetting histogram counts")
@@ -112,7 +109,7 @@ func runSimulations(cases float64, noncases float64, tp float64, fn float64, tn 
 	return cas, noncas, prev, trp, fln, pos, trn, flp, neg
 }
 
-func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe []float64) ([]float64, []float64, []float64, []float64) {
+func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe []float64, sample int) ([]float64, []float64, []float64, []float64) {
 
 	// pv, ps, ne, fs, fe: prevalence, true positives, true negatives, false positives, false negatives
 
@@ -122,10 +119,10 @@ func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe [
 	spec := make([]float64, sample)
 
 	for i := 0; i < sample; i++ {
-		fmt.Print(pv[i]*ps[i] + (1-pv[i])*(fs[i]))
-		fmt.Print((1-pv[i])*ne[i] + pv[i]*(fe[i]))
-		fmt.Print(pv[i]*ps[i] + pv[i]*(fe[i]))
-		fmt.Print((1-pv[i])*ne[i] + (1-pv[i])*(fs[i]))
+		// fmt.Print(pv[i]*ps[i] + (1-pv[i])*(fs[i]))
+		// fmt.Print((1-pv[i])*ne[i] + pv[i]*(fe[i]))
+		// fmt.Print(pv[i]*ps[i] + pv[i]*(fe[i]))
+		// fmt.Print((1-pv[i])*ne[i] + (1-pv[i])*(fs[i]))
 
 		ppv[i] = pv[i] * ps[i] / (pv[i]*ps[i] + (1-pv[i])*(fs[i]))            // number of true positives / (number of true positives + number of false positives)
 		npv[i] = (1 - pv[i]) * ne[i] / ((1-pv[i])*ne[i] + pv[i]*(fe[i]))      // number of true negatives / (number of true negatives + number of false negatives)

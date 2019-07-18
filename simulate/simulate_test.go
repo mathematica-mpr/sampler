@@ -13,14 +13,14 @@ func BenchmarkSimulate(b *testing.B) {
 	}
 }
 
-func TestCounts(t *testing.T) {
-	sample := 200
-	cas, _, _, _, _, _, _, _, _ := runSimulations(450, 9872155, 61, 41, 14587, 97, sample)
-	fmt.Print(cas)
+// func TestCounts(t *testing.T) {
+// 	sample := 200
+// 	cas, _, _, _, _, _, _, _, _ := runSimulations(450, 9872155, 61, 41, 14587, 97, sample)
+// 	fmt.Print(cas)
 
-	Cases := counts(cas, sample)
-	fmt.Print(Cases)
-}
+// 	Cases := counts(cas, sample)
+// 	fmt.Print(Cases)
+// }
 
 func TestSimulate(t *testing.T) {
 
