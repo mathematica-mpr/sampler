@@ -13,14 +13,26 @@ func BenchmarkSimulate(b *testing.B) {
 	}
 }
 
-// func TestCounts(t *testing.T) {
-// 	sample := 200
-// 	cas, _, _, _, _, _, _, _, _ := runSimulations(450, 9872155, 61, 41, 14587, 97, sample)
-// 	fmt.Print(cas)
+func TestCounts(t *testing.T) {
 
-// 	Cases := counts(cas, sample)
-// 	fmt.Print(Cases)
-// }
+	_, _, _, _, _, pos, _, _, _ := runSimulations(0.012*10000, 0.988*10000, 200, 41, 62, 1000, 1000)
+
+	// cas := make([]float64, 1000)
+	// for i := 0; i < len(cas); i++ {
+	// 	cas[i] = rand.NormFloat64()
+	// }
+	cts := bincounts(pos)
+	nzero := 0
+	for _, cnt := range cts {
+		if cnt.Y == 0 {
+			nzero++
+		}
+	}
+	if nzero > len(pos.Xs)/10 {
+		t.Fatalf("number of zeros = %d", nzero)
+	}
+
+}
 
 func TestSimulate(t *testing.T) {
 
