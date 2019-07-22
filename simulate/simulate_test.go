@@ -9,13 +9,13 @@ import (
 func BenchmarkSimulate(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
-		Simulate(1000, 121356654, 39, 14580, 41, 61, 100)
+		Simulate(1000, 121356654, 39, 14580, 41, 61, 10000)
 	}
 }
 
 func TestCounts(t *testing.T) {
 
-	_, _, _, _, _, pos, _, _, _ := runSimulations(0.012*10000, 0.988*10000, 200, 41, 62, 1000, 1000)
+	_, _, _, _, _, pos, _, _, _ := runSimulations(0.012*10000, 0.988*10000, 200, 41, 62, 1000, 10000)
 
 	// cas := make([]float64, 1000)
 	// for i := 0; i < len(cas); i++ {

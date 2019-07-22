@@ -23,7 +23,7 @@ import (
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
 // static variable
-var sample = 1000
+var sample = 10000
 
 func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
