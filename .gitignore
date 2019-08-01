@@ -2,11 +2,15 @@
 
 # Binaries for programs and plugins
 *.exe
+*.zip
+*_debug_bin
+testing/
+*.vscode/
 *.exe~
 *.dll
 *.so
 *.dylib
-main/main
+main
 
 # Test binary, built with `go test -c`
 *.test
