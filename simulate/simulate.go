@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"time"
+
+	exp "golang.org/x/exp/rand"
 )
 
 type dict struct {
@@ -102,8 +105,40 @@ func runSimulations(cases float64, noncases float64, tp float64, fn float64, tn 
 	flp := make([]float64, sample) // distribution of false positives
 	neg := make([]float64, sample) // distribution of negatives ("truth")
 
+	// Seed for sampling
+	rand.Seed(time.Now().UnixNano())
+
+	prevSource := exp.Uint64()
+	prevSeed := exp.NewSource(prevSource)
+
+	posSource := exp.Uint64()
+	posSeed := exp.NewSource(posSource)
+
+	negSource := exp.Uint64()
+	negSeed := exp.NewSource(negSource)
+	//instigating sim objects here to save time
+	// Prevalence
+	simPrev := sim{
+		hyper1: cases,
+		hyper2: noncases,
+		Src:    prevSeed}
+
+	// Positive row of confusion matrix
+	simPos := sim{
+		hyper1: tp,
+		hyper2: fn,
+		Src:    posSeed}
+
+	// Negative row of confusion matrix
+	simNeg := sim{
+		hyper1: tn,
+		hyper2: fp,
+		Src:    negSeed}
+
+	// now, we are ready to sample
+
 	for i := 0; i < sample; i++ {
-		cas[i], noncas[i], prev[i], trp[i], fln[i], pos[i], trn[i], flp[i], neg[i] = samples(cases, noncases, tp, fn, tn, fp)
+		cas[i], noncas[i], prev[i], trp[i], fln[i], pos[i], trn[i], flp[i], neg[i] = samples(simPrev, simPos, simNeg)
 	}
 
 	return cas, noncas, prev, trp, fln, pos, trn, flp, neg

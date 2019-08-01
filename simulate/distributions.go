@@ -5,30 +5,31 @@ package simulate
 // and returns one number from each
 
 import (
-	"math/rand"
-
+	exp "golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
 // TODO: Pass in rand.Source for randomnesss generator?? Or eliminate it
 // keep watch for math/rand vs gonum number generator
 
-type simul struct {
+type sim struct {
 	// Put hyperprior means here
 
 	hyper1 float64
 	hyper2 float64
-	Src    rand.Source
+	Src    exp.Source
 }
 
-func (s simul) run() (float64, float64, float64) {
+func (s sim) run() (float64, float64, float64) {
 
 	// Hyperpriors (Poisson)
 	hp1 := distuv.Poisson{
-		Lambda: s.hyper1}
+		Lambda: s.hyper1,
+		Src:    s.Src}
 
 	hp2 := distuv.Poisson{
-		Lambda: s.hyper2}
+		Lambda: s.hyper2,
+		Src:    s.Src}
 
 	alpha := hp1.Rand()
 	beta := hp2.Rand()
