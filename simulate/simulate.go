@@ -174,12 +174,12 @@ func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe [
 
 		ppv[i] = pv[i] * ps[i] / (pv[i]*ps[i] + (1-pv[i])*(fs[i]))            // number of true positives / (number of true positives + number of false positives)
 		npv[i] = (1 - pv[i]) * ne[i] / ((1-pv[i])*ne[i] + pv[i]*(fe[i]))      // number of true negatives / (number of true negatives + number of false negatives)
-		sens[i] = pv[i] * ps[i] / (pv[i]*ps[i] + pv[i]*(fe[i]))               // number of true negatives / (number of true positives + number of false negatives)
+		sens[i] = pv[i] * ps[i] / (pv[i]*ps[i] + pv[i]*(fe[i]))               // number of true positives / (number of true positives + number of false negatives)
 		spec[i] = (1 - pv[i]) * ne[i] / ((1-pv[i])*ne[i] + (1-pv[i])*(fs[i])) // number of true negatives / (number of true negatives + number of false positives)
-		fpr[i] = pv[i] * ps[i] / ((1-pv[i])*ne[i] + (1-pv[i])*(fs[i]))
-		fnr[i] = (1 - pv[i]) * ne[i] / (pv[i]*ps[i] + pv[i]*(fe[i]))
-		fmr[i] = pv[i] * ps[i] / ((1-pv[i])*ne[i] + pv[i]*(fe[i]))
-		fdr[i] = (1 - pv[i]) * ne[i] / (pv[i]*ps[i] + (1-pv[i])*(fs[i]))
+		fpr[i] = pv[i] * fs[i] / ((1-pv[i])*ne[i] + (1-pv[i])*(fs[i]))        // FP / (FP + TN)
+		fnr[i] = pv[i] * fe[i] / (pv[i]*ps[i] + pv[i]*(fe[i]))                //FN / (Tp + FN)
+		fmr[i] = pv[i] * fe[i] / ((1-pv[i])*ne[i] + pv[i]*(fe[i]))
+		fdr[i] = pv[i] * fs[i] / (pv[i]*ps[i] + (1-pv[i])*(fs[i])) // FP / (TP + FP)
 
 	}
 
