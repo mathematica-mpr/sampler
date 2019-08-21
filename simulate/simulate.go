@@ -29,6 +29,8 @@ type dict struct {
 	Spec       []coord
 	Fpr        []coord
 	Fnr        []coord
+	For        []coord
+	Fdr        []coord
 }
 
 // Simulate runs sampler
@@ -42,7 +44,7 @@ func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float6
 	fmt.Printf("\nSimulation took %s ", elapsed)
 
 	fmt.Printf("\nComputing metrics")
-	ppv, npv, sens, spec, fpr, fnr := computeMetrics(prev, trp, trn, flp, fln, sample)
+	ppv, npv, sens, spec, fpr, fnr, fmr, fdr := computeMetrics(prev, trp, trn, flp, fln, sample)
 
 	// Getting the counts for histogram display
 	fmt.Printf("\nGetting histogram counts")
@@ -61,13 +63,16 @@ func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float6
 		Sens:       counts(sens, sample),
 		Spec:       counts(spec, sample),
 		Fpr:        counts(fpr, sample),
-		Fnr:        counts(fnr, sample)}
+		Fnr:        counts(fnr, sample),
+		For:        counts(fmr, sample),
+		Fdr:        counts(fdr, sample)}
 
 	// Checking that all slices are less than 100 indeces
 	if len(dat.Cases) > 100 || len(dat.NonCases) > 100 || len(dat.Prevalence) > 100 ||
 		len(dat.TruePos) > 100 || len(dat.FalNeg) > 100 || len(dat.Positives) > 100 ||
 		len(dat.TrueNeg) > 100 || len(dat.FalPos) > 100 || len(dat.Negatives) > 100 ||
-		len(dat.PPV) > 100 || len(dat.NPV) > 100 || len(dat.Sens) > 100 || len(dat.Spec) > 100.00 {
+		len(dat.PPV) > 100 || len(dat.NPV) > 100 || len(dat.Sens) > 100 || len(dat.Spec) > 100.00 ||
+		len(dat.Fpr) > 100 || len(dat.Fnr) > 100 || len(dat.For) > 100 || len(dat.Fdr) > 100 {
 		return nil, errors.New("Length of histogram coords greater than 100")
 	}
 	//TODO https://stackoverflow.com/questions/18926303/iterate-through-the-fields-of-a-struct-in-go
@@ -148,7 +153,7 @@ func runSimulations(cases float64, noncases float64, tp float64, fn float64, tn 
 	return cas, noncas, prev, trp, fln, pos, trn, flp, neg
 }
 
-func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe []float64, sample int) ([]float64, []float64, []float64, []float64, []float64, []float64) {
+func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe []float64, sample int) ([]float64, []float64, []float64, []float64, []float64, []float64, []float64, []float64) {
 
 	// pv, ps, ne, fs, fe: prevalence, true positives, true negatives, false positives, false negatives
 
@@ -158,6 +163,8 @@ func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe [
 	spec := make([]float64, sample)
 	fpr := make([]float64, sample)
 	fnr := make([]float64, sample)
+	fmr := make([]float64, sample)
+	fdr := make([]float64, sample)
 
 	for i := 0; i < sample; i++ {
 		// fmt.Print(pv[i]*ps[i] + (1-pv[i])*(fs[i]))
@@ -171,10 +178,12 @@ func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe [
 		spec[i] = (1 - pv[i]) * ne[i] / ((1-pv[i])*ne[i] + (1-pv[i])*(fs[i])) // number of true negatives / (number of true negatives + number of false positives)
 		fpr[i] = pv[i] * ps[i] / ((1-pv[i])*ne[i] + (1-pv[i])*(fs[i]))
 		fnr[i] = (1 - pv[i]) * ne[i] / (pv[i]*ps[i] + pv[i]*(fe[i]))
+		fmr[i] = pv[i] * ps[i] / ((1-pv[i])*ne[i] + pv[i]*(fe[i]))
+		fdr[i] = (1 - pv[i]) * ne[i] / (pv[i]*ps[i] + (1-pv[i])*(fs[i]))
 
 	}
 
-	return ppv, npv, sens, spec, fpr, fnr
+	return ppv, npv, sens, spec, fpr, fnr, fmr, fdr
 }
 
 func convertToJSON(data dict) ([]byte, error) {
