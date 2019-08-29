@@ -1,3 +1,4 @@
 # sampler
 
-Go code for a sampler app. More info in the Wiki
+Go code for a sampler app. 
+For info on use cases, check out the [Wiki](https://github.com/mathematica-mpr/sampler/wiki).
