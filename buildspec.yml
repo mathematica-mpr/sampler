@@ -19,7 +19,7 @@ phases:
             - echo build go project
             - ls 
             - pwd
-            - go build -o main
+            - GOPATH=$(pwd) go build -o main
 
             # zip go app
             - echo zip go project
