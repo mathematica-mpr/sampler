@@ -17,6 +17,7 @@ phases:
         commands:
             # Build our go application
             - echo build go project
+            - ls
             - go build -o ./main/main ./main
 
             # zip go app
