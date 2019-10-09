@@ -18,11 +18,11 @@ phases:
             # Build our go application
             - echo build go project
             - ls
-            - go build -o ./main/main ./main
+            - go build -o main
 
             # zip go app
             - echo zip go project
-            - zip -j main.zip ./main/main
+            - zip -j main.zip main
             - ls
             - echo updating lambda function
             - aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
