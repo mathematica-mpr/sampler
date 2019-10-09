@@ -9,7 +9,7 @@ phases:
             golang: 1.12
         commands:
             - echo Installation Started
-            - export GOPATH=$(pwd)/..
+            - export GOPATH=$(pwd)/../..
             - go get -v github.com/montanaflynn/stats
             - go get -v  -u gonum.org/v1/gonum/...
             - go get -v -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
