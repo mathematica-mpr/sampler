@@ -10,9 +10,9 @@ phases:
         commands:
             - echo Installation Started
             - export GOPATH=$(pwd)/..
-            - go get github.com/montanaflynn/stats
-            - go get -u gonum.org/v1/gonum/...
-            - go get -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
+            - go get -v github.com/montanaflynn/stats
+            - go get -v  -u gonum.org/v1/gonum/...
+            - go get -v -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
 
     build:
         commands:
