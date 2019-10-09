@@ -11,9 +11,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sampler/simulate"
 	"strconv"
 	"time"
+
+	"sampler/simulate"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
