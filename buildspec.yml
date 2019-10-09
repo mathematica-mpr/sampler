@@ -17,7 +17,7 @@ phases:
         commands:
              #moving files in sampler
             - mkdir sampler
-            - mv * sampler
+            - mv * sampler || true
             - cd sampler
             # Build our go application
             - echo build go project
