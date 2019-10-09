@@ -13,22 +13,18 @@ phases:
     build:
         commands:
             #moving files in sampler
+            - echo $LAMBDANAME
             - mkdir sampler
             - mv * sampler || true
             - cd sampler
             # Build our go application
             - echo build go project
-            - ls
-            - pwd
             - go install ./simulate
             - go build -o main
 
             # zip go app
             - echo zip go project
             - zip -j main.zip main
-            - ls
-            - echo updating lambda function
-            - echo $LAMBDANAME
             #- aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
 
 artifacts:
