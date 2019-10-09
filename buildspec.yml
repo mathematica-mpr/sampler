@@ -15,11 +15,15 @@ phases:
 
     build:
         commands:
+             #moving files in sampler
+            - mkdir sampler
+            - mv * sampler
+            - cd sampler
             # Build our go application
             - echo build go project
             - ls 
             - pwd
-            - GOPATH=$(pwd)/.. go build -o main
+            - GOPATH=$(pwd)/../.. go build -o main
 
             # zip go app
             - echo zip go project
