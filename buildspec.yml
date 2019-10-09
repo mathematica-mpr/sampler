@@ -1,7 +1,4 @@
 version: 0.2
-environment_variables:
-    plaintext:
-        S3_BUCKET: 'simulate'
 
 phases:
     install:
@@ -9,19 +6,19 @@ phases:
             golang: 1.12
         commands:
             - echo Installation Started
-            - go get -v github.com/montanaflynn/stats
-            - go get -v  -u gonum.org/v1/gonum/...
-            - go get -v -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
+            - go get github.com/montanaflynn/stats
+            - go get -u gonum.org/v1/gonum/...
+            - go get -u github.com/aws/aws-lambda-go/cmd/build-lambda-zip
 
     build:
         commands:
-             #moving files in sampler
+            #moving files in sampler
             - mkdir sampler
             - mv * sampler || true
             - cd sampler
             # Build our go application
             - echo build go project
-            - ls 
+            - ls
             - pwd
             - go install ./simulate
             - go build -o main
@@ -31,7 +28,8 @@ phases:
             - zip -j main.zip main
             - ls
             - echo updating lambda function
-            - aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
+            - echo $LAMBDANAME
+            #- aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
 
 artifacts:
     type: zip
