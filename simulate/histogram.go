@@ -9,11 +9,13 @@ import (
 	"github.com/montanaflynn/stats"
 )
 
-type coord struct {
+// Coord contains the coordinates of the histogram.
+// X and Y are self-explanatory, and C is the cumulative count
+type Coord struct {
 	// (x,y) coordinates of histogram -- the idea is to use a dictionary of pairs of (x,y) coords
 	// need to be uppercase for json export
 	X float64 //Value
-	Y int     //Count
+	Y int64   //Count
 	C float64 //Cumulative Count
 }
 
@@ -65,14 +67,14 @@ func makebins(arr []float64, samp int) []float64 {
 	return bins
 }
 
-func counts(arr []float64, samp int) []coord {
+func counts(arr []float64, samp int) []Coord {
 
 	distbins := makebins(arr, samp)
 
-	hist := make([]coord, len(distbins)-1)
+	hist := make([]Coord, len(distbins)-1)
 
 	xs := make([]float64, len(distbins)-1)
-	ys := make([]int, len(distbins)-1)
+	ys := make([]int64, len(distbins)-1)
 	cs := make([]float64, len(distbins)-1)
 
 	for j := 0; j <= len(distbins)-2; j++ {
@@ -84,7 +86,7 @@ func counts(arr []float64, samp int) []coord {
 			}
 		}
 		xs[j] = (distbins[j] + distbins[j+1]) / 2 // mean of lower and upper bounds of bins for plotting
-		ys[j] = y
+		ys[j] = int64(y)
 
 		if j == 0 {
 			cs[j] = float64(y)
@@ -92,7 +94,7 @@ func counts(arr []float64, samp int) []coord {
 			cs[j] = cs[j-1] + float64(ys[j]) // getting cumulative count of y - dividing by samp gets proportion of values below and including bin
 		}
 
-		coordinates := coord{X: xs[j], Y: ys[j], C: cs[j] / float64(samp)}
+		coordinates := Coord{X: xs[j], Y: ys[j], C: cs[j] / float64(samp)}
 		hist[j] = coordinates
 	}
 	return hist

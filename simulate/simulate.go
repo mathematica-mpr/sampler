@@ -12,25 +12,27 @@ import (
 	exp "golang.org/x/exp/rand"
 )
 
-type dict struct {
+// Dict contains all the metrics that we are returning to the user.
+// Each metric contains a set of (x, y, c) coordinates
+type Dict struct {
 	// Ultimate output
-	Cases      []coord
-	NonCases   []coord
-	Prevalence []coord
-	TruePos    []coord
-	FalNeg     []coord
-	Positives  []coord
-	TrueNeg    []coord
-	FalPos     []coord
-	Negatives  []coord
-	PPV        []coord
-	NPV        []coord
-	Sens       []coord
-	Spec       []coord
-	Fpr        []coord
-	Fnr        []coord
-	For        []coord
-	Fdr        []coord
+	Cases      []Coord
+	NonCases   []Coord
+	Prevalence []Coord
+	TruePos    []Coord
+	FalNeg     []Coord
+	Positives  []Coord
+	TrueNeg    []Coord
+	FalPos     []Coord
+	Negatives  []Coord
+	PPV        []Coord
+	NPV        []Coord
+	Sens       []Coord
+	Spec       []Coord
+	Fpr        []Coord
+	Fnr        []Coord
+	For        []Coord
+	Fdr        []Coord
 }
 
 // Simulate runs sampler
@@ -48,7 +50,7 @@ func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float6
 
 	// Getting the counts for histogram display
 	fmt.Printf("\nGetting histogram counts")
-	dat := dict{
+	dat := Dict{
 		Cases:      counts(cas, sample),
 		NonCases:   counts(noncas, sample),
 		Prevalence: counts(prev, sample),
@@ -186,7 +188,7 @@ func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe [
 	return ppv, npv, sens, spec, fpr, fnr, fmr, fdr
 }
 
-func convertToJSON(data dict) ([]byte, error) {
+func convertToJSON(data Dict) ([]byte, error) {
 	out, err := json.Marshal(data)
 	return out, err
 }

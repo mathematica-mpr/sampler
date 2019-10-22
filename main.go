@@ -6,6 +6,7 @@ package main
 // sampler
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -14,11 +15,73 @@ import (
 	"strconv"
 	"time"
 
+	"sampler/compare"
 	"sampler/simulate"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
+
+// myEvent is poised to parse incoming data for compare
+type myEvent struct {
+	Cases      []simulate.Coord `json:"Cases"`
+	NonCases   []simulate.Coord `json:"NonCases"`
+	Prevalence []simulate.Coord `json:"Prevalence"`
+	TruePos    []simulate.Coord `json:"TruePos"`
+	FalNeg     []simulate.Coord `json:"FalNeg"`
+	Positives  []simulate.Coord `json:"Positives"`
+	TrueNeg    []simulate.Coord `json:"TrueNeg"`
+	FalPos     []simulate.Coord `json:"FalPos"`
+	Negatives  []simulate.Coord `json:"Negatives"`
+	PPV        []simulate.Coord `json:"PPV"`
+	NPV        []simulate.Coord `json:"NPV"`
+	Sens       []simulate.Coord `json:"Sens"`
+	Spec       []simulate.Coord `json:"Spec"`
+	Fpr        []simulate.Coord `json:"Fpr"`
+	Fnr        []simulate.Coord `json:"Fnr"`
+	For        []simulate.Coord `json:"For"`
+	Fdr        []simulate.Coord `json:"Fdr"`
+}
+
+type inputdiff struct {
+	Cases      compare.Diff
+	NonCases   compare.Diff
+	Prevalence compare.Diff
+	TruePos    compare.Diff
+	FalNeg     compare.Diff
+	Positives  compare.Diff
+	TrueNeg    compare.Diff
+	FalPos     compare.Diff
+	Negatives  compare.Diff
+	PPV        compare.Diff
+	NPV        compare.Diff
+	Sens       compare.Diff
+	Spec       compare.Diff
+	Fpr        compare.Diff
+	Fnr        compare.Diff
+	For        compare.Diff
+	Fdr        compare.Diff
+}
+
+type outputdiff struct {
+	Cases      compare.Probs
+	NonCases   compare.Probs
+	Prevalence compare.Probs
+	TruePos    compare.Probs
+	FalNeg     compare.Probs
+	Positives  compare.Probs
+	TrueNeg    compare.Probs
+	FalPos     compare.Probs
+	Negatives  compare.Probs
+	PPV        compare.Probs
+	NPV        compare.Probs
+	Sens       compare.Probs
+	Spec       compare.Probs
+	Fpr        compare.Probs
+	Fnr        compare.Probs
+	For        compare.Probs
+	Fdr        compare.Probs
+}
 
 // Log
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
@@ -27,6 +90,26 @@ var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 var sample = 1000
 
 func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+	var Jdata []byte
+	var err error
+
+	verb, err := strconv.ParseInt(event.QueryStringParameters["Action"], 10, 64)
+
+	if verb == 1 {
+		Jdata, err := simulateData(event)
+	} else if verb == 2 {
+		Jdata, err := compareData(event)
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Body:       string(Jdata),
+		Headers:    map[string]string{"Access-Control-Allow-Origin": "*"},
+	}, nil
+}
+
+func simulateData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	startShow := time.Now()
 	// user input
@@ -88,6 +171,68 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	if err != nil {
 		return serverError(err)
 	}
+
+	elapsedShow := time.Since(startShow)
+	fmt.Printf("\nShow took %s ", elapsedShow)
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Body:       string(Jdata),
+		Headers:    map[string]string{"Access-Control-Allow-Origin": "*"},
+	}, nil
+}
+
+func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+	startShow := time.Now()
+	// user input
+	var datA myEvent
+	var datB myEvent
+
+	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datA)
+	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datB)
+
+	// putting things in order for compare
+	var indiff inputdiff
+
+	indiff = inputdiff{
+		Cases:      compare.Diff{Dista: datA.Cases, Distb: datB.Cases},
+		NonCases:   compare.Diff{Dista: datA.NonCases, Distb: datB.NonCases},
+		Prevalence: compare.Diff{Dista: datA.Prevalence, Distb: datB.Prevalence},
+		TruePos:    compare.Diff{Dista: datA.TruePos, Distb: datB.TruePos},
+		FalNeg:     compare.Diff{Dista: datA.FalNeg, Distb: datB.FalNeg},
+		Positives:  compare.Diff{Dista: datA.Positives, Distb: datB.Positives},
+		TrueNeg:    compare.Diff{Dista: datA.TrueNeg, Distb: datB.TrueNeg},
+		FalPos:     compare.Diff{Dista: datA.FalPos, Distb: datB.FalPos},
+		Negatives:  compare.Diff{Dista: datA.Negatives, Distb: datB.Negatives},
+		PPV:        compare.Diff{Dista: datA.PPV, Distb: datB.PPV},
+		NPV:        compare.Diff{Dista: datA.NPV, Distb: datB.NPV},
+		Sens:       compare.Diff{Dista: datA.Sens, Distb: datB.Sens},
+		Spec:       compare.Diff{Dista: datA.Spec, Distb: datB.Spec},
+		Fpr:        compare.Diff{Dista: datA.Fpr, Distb: datB.Fpr},
+		Fnr:        compare.Diff{Dista: datA.Fnr, Distb: datB.Fnr},
+		For:        compare.Diff{Dista: datA.For, Distb: datB.For},
+		Fdr:        compare.Diff{Dista: datA.Fdr, Distb: datB.Fdr}}
+
+	// compare distributions for each metric
+	odiff := outputdiff{
+		Cases:      compare.Compare(indiff.Cases),
+		NonCases:   compare.Compare(indiff.NonCases),
+		Prevalence: compare.Compare(indiff.Prevalence),
+		TruePos:    compare.Compare(indiff.TruePos),
+		FalNeg:     compare.Compare(indiff.FalNeg),
+		Positives:  compare.Compare(indiff.Positives),
+		TrueNeg:    compare.Compare(indiff.TrueNeg),
+		FalPos:     compare.Compare(indiff.FalPos),
+		Negatives:  compare.Compare(indiff.Negatives),
+		PPV:        compare.Compare(indiff.PPV),
+		NPV:        compare.Compare(indiff.NPV),
+		Sens:       compare.Compare(indiff.Sens),
+		Spec:       compare.Compare(indiff.Spec),
+		Fpr:        compare.Compare(indiff.Fpr),
+		Fnr:        compare.Compare(indiff.Fnr),
+		For:        compare.Compare(indiff.For),
+		Fdr:        compare.Compare(indiff.Fdr)}
 
 	elapsedShow := time.Since(startShow)
 	fmt.Printf("\nShow took %s ", elapsedShow)
