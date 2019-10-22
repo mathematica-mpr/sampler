@@ -1,4 +1,4 @@
-package comparomatic
+package compare
 
 import "testing"
 
