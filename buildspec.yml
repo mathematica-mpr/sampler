@@ -1,7 +1,4 @@
 version: 0.2
-environment_variables:
-    plaintext:
-        S3_BUCKET: 'simulate'
 
 phases:
     install:
@@ -15,16 +12,20 @@ phases:
 
     build:
         commands:
+            #moving files in sampler
+            - echo Environement is $LAMBDANAME
+            - mkdir sampler
+            - mv * sampler || true
+            - cd sampler
             # Build our go application
             - echo build go project
-            - go build -o ./main/main ./main
+            - go install ./simulate
+            - go build -o main
 
             # zip go app
             - echo zip go project
-            - zip -j main.zip ./main/main
-            - ls
-            - echo updating lambda function
-            - aws lambda update-function-code --function-name simulate --zip-file fileb://main.zip
+            - zip -j main.zip main
+            - aws lambda update-function-code --function-name $LAMBDANAME --zip-file fileb://main.zip
 
 artifacts:
     type: zip
