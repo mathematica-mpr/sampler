@@ -15,15 +15,6 @@ func BenchmarkSimulate(b *testing.B) {
 	}
 }
 
-// func TestCounts(t *testing.T) {
-// 	sample := 200
-// 	cas, _, _, _, _, _, _, _, _ := runSimulations(450, 9872155, 61, 41, 14587, 97, sample)
-// 	fmt.Print(cas)
-
-// 	Cases := counts(cas, sample)
-// 	fmt.Print(Cases)
-// }
-
 func TestSimulate(t *testing.T) {
 
 	_, err := Simulate(1200, 8800, 61, 41, 14816, 39, 1000)
@@ -63,19 +54,3 @@ func TestDistributions(t *testing.T) {
 	}
 
 }
-
-// run function test:
-// design test that runs the three distributions
-// with same priors ~ 100 times and check that mean is equal to
-// what we expect
-
-// to do:
-// check random number generator
-// pass in random number gen to Poisson and Beta (rand.Source or other)
-// how to fix:
-// 1. create 3 sim objects outside of loop that get random number
-// 2. run prev.run() etc. inside of sample loop (where sample is currently called)
-// random number generator --> rand.Rand (has to be generator)
-// the idea is that as we go through the loop, the random number changes
-
-//  then test with static seed so that we get number that we expect

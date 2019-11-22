@@ -237,9 +237,16 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	elapsedShow := time.Since(startShow)
 	fmt.Printf("\nShow took %s ", elapsedShow)
 
+	//Saving output data as json
+	fmt.Printf("\nConverting data to json")
+	jsonFile, err := convertToJSON(odiff)
+	fmt.Printf("\nJson file created")
+
+	return jsonFile, err
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
-		Body:       string(Jdata),
+		Body:       string(jsonFile),
 		Headers:    map[string]string{"Access-Control-Allow-Origin": "*"},
 	}, nil
 }

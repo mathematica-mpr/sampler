@@ -1,6 +1,7 @@
 package compare
 
 import (
+	"math"
 	"sampler/simulate"
 )
 
@@ -22,7 +23,7 @@ type Probs struct {
 
 // Compare function compares two distributions and provides the
 // probability that they are different
-func (d Diff) Compare() Probs {
+func Compare(d Diff) Probs {
 
 	var sumXa float64
 	var sumXb float64
@@ -34,13 +35,9 @@ func (d Diff) Compare() Probs {
 
 	for i := 0; i < len(d.Dista); i++ {
 		sumXa += float64(d.Dista[i].Y)
+		sumXb = 0
 		for j := 0; j < len(d.Distb); j++ {
 			sumXb += float64(d.Distb[j].Y)
-			// fmt.Print("\nX_a:", d.Dista[i].X)
-			// fmt.Print("\nX_b ", d.Distb[j].X)
-			// fmt.Print("\nY_a:", d.Dista[i].Y)
-			// fmt.Print("\nY_b ", d.Distb[j].Y)
-			// fmt.Print("\n")
 
 			num[i] += (d.Dista[i].X - d.Distb[j].X) * float64(d.Dista[i].Y) * float64(d.Distb[j].Y)
 		}
@@ -50,8 +47,8 @@ func (d Diff) Compare() Probs {
 			less += num[i]
 		}
 		sum += num[i]
-
-		probs = Probs{Diff: sum / (sumXa * sumXb), Less: less / (sumXa * sumXb), More: more / (sumXa * sumXb)}
 	}
+	probs = Probs{Diff: math.Abs(sum / (sumXa * sumXb)), Less: math.Abs(less / (sumXa * sumXb)), More: math.Abs(more / (sumXa * sumXb))}
+
 	return (probs)
 }

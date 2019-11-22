@@ -77,22 +77,6 @@ func Simulate(cases float64, noncases float64, tp float64, fn float64, tn float6
 		len(dat.Fpr) > 100 || len(dat.Fnr) > 100 || len(dat.For) > 100 || len(dat.Fdr) > 100 {
 		return nil, errors.New("Length of histogram coords greater than 100")
 	}
-	//TODO https://stackoverflow.com/questions/18926303/iterate-through-the-fields-of-a-struct-in-go
-	// Checking that no cumulative distribution is null
-	// for i := 0; i <= len(dat); i++ {
-	// 	for j := 0; j <= len(dat[i]); j++ {
-	// 		c := len(dat[i][j])
-	// 		if dat[i][j][c] != 1 {
-	// 			return nil, errors.New("Cumulative distribution not equal to 1")
-	// 		}
-	// 	}
-	// }
-	// if dat.Cases[3][i] == 1 || dat.NonCases[3][i] == 1 || dat.Prevalence[3][i] == 1 ||
-	// 	dat.TruePos[3][i] == 1 || dat.FalNeg[3][i] == 1 || dat.Positives[3][i] == 1 ||
-	// 	dat.TrueNeg[3][i] == 1 || dat.FalPos[3][i] == 1 || dat.Negatives[3][i] == 1 ||
-	// 	dat.PPV[3][i] == 1 || dat.NPV[3][i] == 1 || dat.Sens[3][i] == 1 || dat.Spec[3][i] == 1 {
-	// 	return nil, errors.New("Cumulative distribution not equal to 1")
-	// }
 
 	//Saving histogram data as json
 	fmt.Printf("\nConverting data to json")
@@ -169,10 +153,6 @@ func computeMetrics(pv []float64, ps []float64, ne []float64, fs []float64, fe [
 	fdr := make([]float64, sample)
 
 	for i := 0; i < sample; i++ {
-		// fmt.Print(pv[i]*ps[i] + (1-pv[i])*(fs[i]))
-		// fmt.Print((1-pv[i])*ne[i] + pv[i]*(fe[i]))
-		// fmt.Print(pv[i]*ps[i] + pv[i]*(fe[i]))
-		// fmt.Print((1-pv[i])*ne[i] + (1-pv[i])*(fs[i]))
 
 		ppv[i] = pv[i] * ps[i] / (pv[i]*ps[i] + (1-pv[i])*(fs[i]))            // number of true positives / (number of true positives + number of false positives)
 		npv[i] = (1 - pv[i]) * ne[i] / ((1-pv[i])*ne[i] + pv[i]*(fe[i]))      // number of true negatives / (number of true negatives + number of false negatives)
