@@ -190,7 +190,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	var datB myEvent
 
 	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datA)
-	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datB)
+	json.Unmarshal([]byte(event.QueryStringParameters["B"]), &datB)
 
 	// putting things in order for compare
 	var indiff inputdiff
@@ -239,10 +239,12 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 
 	//Saving output data as json
 	fmt.Printf("\nConverting data to json")
-	jsonFile, err := convertToJSON(odiff)
+	jsonFile, err := json.Marshal(odiff)
 	fmt.Printf("\nJson file created")
 
-	return jsonFile, err
+	if err != nil {
+		return serverError(err)
+	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
