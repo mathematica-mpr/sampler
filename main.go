@@ -98,8 +98,15 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 
 	if verb == 1 {
 		Jdata, err := simulateData(event)
+		return Jdata, err
+
 	} else if verb == 2 {
 		Jdata, err := compareData(event)
+		return Jdata, err
+	}
+
+	if err != nil {
+		return serverError(err)
 	}
 
 	return events.APIGatewayProxyResponse{
