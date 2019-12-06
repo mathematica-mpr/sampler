@@ -196,12 +196,16 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	var datA myEvent
 	var datB myEvent
 
+	fmt.Printf("\nParsing json input")
 	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datA)
+	fmt.Printf("\nData A parsed")
 	json.Unmarshal([]byte(event.QueryStringParameters["B"]), &datB)
+	fmt.Printf("\nData B parsed")
 
 	// putting things in order for compare
 	var indiff inputdiff
 
+	fmt.Printf("\nCreating compare input object")
 	indiff = inputdiff{
 		Cases:      compare.Diff{Dista: datA.Cases, Distb: datB.Cases},
 		NonCases:   compare.Diff{Dista: datA.NonCases, Distb: datB.NonCases},
@@ -222,6 +226,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 		Fdr:        compare.Diff{Dista: datA.Fdr, Distb: datB.Fdr}}
 
 	// compare distributions for each metric
+	fmt.Printf("\nComparing distributions")
 	outdiff := outputdiff{
 		Cases:      compare.Compare(indiff.Cases),
 		NonCases:   compare.Compare(indiff.NonCases),
