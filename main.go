@@ -222,7 +222,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 		Fdr:        compare.Diff{Dista: datA.Fdr, Distb: datB.Fdr}}
 
 	// compare distributions for each metric
-	odiff := outputdiff{
+	outdiff := outputdiff{
 		Cases:      compare.Compare(indiff.Cases),
 		NonCases:   compare.Compare(indiff.NonCases),
 		Prevalence: compare.Compare(indiff.Prevalence),
@@ -246,7 +246,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 
 	//Saving output data as json
 	fmt.Printf("\nConverting data to json")
-	jsonFile, err := json.Marshal(odiff)
+	jsonFile, err := json.Marshal(outdiff)
 	fmt.Printf("\nJson file created")
 
 	if err != nil {
