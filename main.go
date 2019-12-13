@@ -87,7 +87,7 @@ type outputdiff struct {
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
 // static variable
-var sample = 5
+var sample = 100
 
 func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
