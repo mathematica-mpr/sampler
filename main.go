@@ -96,11 +96,15 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 
 	verb, err := strconv.ParseInt(event.QueryStringParameters["Action"], 10, 64)
 
+	fmt.Printf("\nAction is %s ", verb)
+
 	if verb == 1 {
+		fmt.Printf("\nSimulating data")
 		Jdata, err := simulateData(event)
 		return Jdata, err
 
 	} else if verb == 2 {
+		fmt.Printf("\nComparing data")
 		Jdata, err := compareData(event)
 		return Jdata, err
 	}
