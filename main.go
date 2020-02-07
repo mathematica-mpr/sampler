@@ -200,7 +200,7 @@ func simulateData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRe
 }
 
 func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Println(event.QueryStringParameters["A"])
+	fmt.Println("this is a test:", event.QueryStringParameters["A"])
 
 	startShow := time.Now()
 	// user input
@@ -208,7 +208,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	var datB myEvent
 	var datC myJSON
 
-	json.Unmarshal(event.QueryStringParameters, &datC)
+	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datC)
 	fmt.Println(datC)
 
 	fmt.Printf("\nParsing json input")
