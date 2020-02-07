@@ -207,6 +207,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	var datB myEvent
 	// var datC string
 
+	fmt.Printf("\nPrinting A")
 	fmt.Println(event.QueryStringParameters["A"])
 
 	fmt.Printf("\nParsing json input")
