@@ -22,6 +22,12 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+
+type myJSON struct{
+	A []myEvent `json:"A"`
+	B []myEvent `json:"B"`
+}
+
 // myEvent is poised to parse incoming data for compare
 type myEvent struct {
 	Cases      []simulate.Coord `json:"Cases"`
@@ -200,6 +206,10 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	// user input
 	var datA myEvent
 	var datB myEvent
+	var datC myJSON
+
+	json.Unmarshal([]byte(event.QueryStringParameters), &datC)
+	fmt.Println(datC)
 
 	fmt.Printf("\nParsing json input")
 	json.Unmarshal([]byte(event.QueryStringParameters["A"]), &datA)
