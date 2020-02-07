@@ -209,7 +209,7 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 	fmt.Printf("\nParsing json input")
 	json.Unmarshal([]byte(event.Body), &datC)
 
-	fmt.Println("full data", datC.A)
+	fmt.Println("A data", datC.A)
 
 	fmt.Printf("\nData A parsed")
 	// json.Unmarshal([]byte(event.Body["B"]), &datB)
