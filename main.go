@@ -255,6 +255,10 @@ func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRes
 
 	//Saving output data as json
 	fmt.Printf("\nConverting data to json")
+	fmt.Printf("\nindiff")
+	fmt.Println(indiff)
+	fmt.Printf("\noutdiff")
+
 	fmt.Println(outdiff)
 	jsonFile, err := json.Marshal(outdiff)
 	fmt.Printf("\nJson file created")
