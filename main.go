@@ -93,9 +93,7 @@ func show(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 
 	var Jdata []byte
 	var err error
-
-	fmt.Printf(event.QueryStringParameters["Action"]);
-
+	
 	verb, err := strconv.ParseInt(event.QueryStringParameters["Action"], 10, 64)
 
 	fmt.Printf("\nAction is %d ", verb)
