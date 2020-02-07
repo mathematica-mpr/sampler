@@ -194,7 +194,7 @@ func simulateData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyRe
 }
 
 func compareData(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Println(event)
+	fmt.Println(event.QueryStringParameters["A"])
 
 	startShow := time.Now()
 	// user input
